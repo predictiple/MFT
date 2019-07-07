@@ -60,7 +60,7 @@ namespace MFT.Attributes
                 var eaLen = BitConverter.ToUInt16(bytese, index);
                 index += 2;
 
-                var name = Encoding.GetEncoding(1252).GetString(bytese, index, nameLen);
+                var name = Encoding.Unicode.GetString(bytese, index, nameLen);
 
                 index += nameLen;
                 index += 1; //null char
@@ -120,7 +120,7 @@ namespace MFT.Attributes
 
                     default:
                         var log = LogManager.GetLogger("EA");
-                        log.Warn($"Unknown EA with name: {name}, Length: 0x{(bytese.Length - index):X}");
+                        // log.Warn($"Unknown EA with name: {name}, Length: 0x{(bytese.Length - index):X}");
                         //var defBuff = new byte[bytese.Length - index];
                        // Buffer.BlockCopy(bytese,index,defBuff,0,defBuff.Length);
                     //    File.WriteAllBytes($"D:\\Temp\\Maxim_EA)STUFF_MFT_wsl2\\EASAmples\\{name}_{Guid.NewGuid().ToString()}.bin",defBuff);
@@ -141,7 +141,7 @@ namespace MFT.Attributes
 
             sb.AppendLine(base.ToString());
 
-            var asAscii = Encoding.GetEncoding(1252).GetString(Content);
+            var asAscii = Encoding.Unicode.GetString(Content);
             var asUnicode = Encoding.Unicode.GetString(Content);
 
             sb.AppendLine();
@@ -174,7 +174,7 @@ namespace MFT.Attributes
             var size = BitConverter.ToInt16(rawBytes, index);
             index += 2;
 
-            Name = Encoding.GetEncoding(1252).GetString(rawBytes, index, size);
+            Name = Encoding.Unicode.GetString(rawBytes, index, size);
         }
 
 
@@ -197,7 +197,7 @@ namespace MFT.Attributes
 //            var size = BitConverter.ToInt16(rawBytes, index);
 //            index += 2;
 //
-//            Name = Encoding.GetEncoding(1252).GetString(rawBytes, index, size);
+//            Name = Encoding.Unicode.GetString(rawBytes, index, size);
         }
 
 
@@ -221,7 +221,7 @@ namespace MFT.Attributes
             var size = BitConverter.ToInt16(rawBytes, index);
             index += 2;
 
-            Hint = Encoding.GetEncoding(1252).GetString(rawBytes, index, size);
+            Hint = Encoding.Unicode.GetString(rawBytes, index, size);
         }
 
         public short Format { get; }
@@ -245,7 +245,7 @@ namespace MFT.Attributes
             }
 
             Timestamp = DateTimeOffset.FromFileTime(tsraw).ToUniversalTime();
-            
+
             RemainingBytes = new byte[rawBytes.Length-8];
             Buffer.BlockCopy(rawBytes,8,RemainingBytes,0,RemainingBytes.Length);
         }
@@ -293,7 +293,7 @@ namespace MFT.Attributes
             index += 2;
             Version = BitConverter.ToInt16(rawBytes,index);
             index += 2;
-         
+
             while (index < rawBytes.Length)
             {
                 var offsetToNextRecord = BitConverter.ToInt32(rawBytes, index);
@@ -304,9 +304,9 @@ namespace MFT.Attributes
                 var keySize =rawBytes[index];
                 index += 1;
 
-                var keyName = Encoding.GetEncoding(1252).GetString(rawBytes, index, keySize);
+                var keyName = Encoding.Unicode.GetString(rawBytes, index, keySize);
                 index += keySize;
-                var valueData = Encoding.GetEncoding(1252).GetString(rawBytes, index, valueSize);
+                var valueData = Encoding.Unicode.GetString(rawBytes, index, valueSize);
                 index += valueSize;
 
                 index += 1;//null terminator
@@ -377,7 +377,7 @@ namespace MFT.Attributes
             var sb = new StringBuilder();
 
             sb.AppendLine("LXATTRB");
-            
+
             sb.AppendLine($"Format: 0x{Format:X}");
             sb.AppendLine($"Version: 0x{Version:X}");
             sb.AppendLine($"Mode: 0x{Mode:X}");
